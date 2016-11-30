@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Palash on 29/11/16.
+ * Created by Palash on 29/11/2016.
  */
 public class AndroUtils {
     private static final String TAG = "AndroUtils";
@@ -42,7 +42,7 @@ public class AndroUtils {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error in LibWeb.isNull:" + e.getMessage());
+            e.printStackTrace();
         }
         return isValid;
     }
@@ -70,8 +70,7 @@ public class AndroUtils {
 
             }
         } catch (Exception e) {
-            System.err
-                    .println("Error in LibWeb.isNullString:" + e.getMessage());
+            e.printStackTrace();
         }
         return isValid;
     }
