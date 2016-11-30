@@ -42,7 +42,7 @@ public class AndroUtils {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error in LibWeb.isNull:" + e.getMessage());
+            e.printStackTrace();
         }
         return isValid;
     }
@@ -70,8 +70,7 @@ public class AndroUtils {
 
             }
         } catch (Exception e) {
-            System.err
-                    .println("Error in LibWeb.isNullString:" + e.getMessage());
+            e.printStackTrace();
         }
         return isValid;
     }
