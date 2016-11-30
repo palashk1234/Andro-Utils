@@ -14,13 +14,11 @@ Copy the class in your project and thats it.
     All the methods to Insert and retrieve values from Shared Preferances including String, Int, Float, Long, Boolean,    
     Set &#60;Strings&#62;  and List &#60;E&#62;. <BR>
   
-    Jst Initialize the AndroUtils in Application class like this <BR>
-    ```java
+    Jst Initialize the AndroUtils in Application class like this    
        AndroUtils.init(getApplicationContext());
-    ```<BR>
-  
-    And Use Methods as <BR>
-    AndroUtils.Prefs.addString(key,value);
+   
+    And Use Methods as
+       AndroUtils.Prefs.addString(key,value);
   
 
 # Contiribute
