@@ -1,5 +1,3 @@
-
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -13,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by palash on 29/11/16.
+ * Created by Palash on 29/11/16.
  */
 public class AndroUtils {
     private static final String TAG = "AndroUtils";
@@ -181,7 +179,7 @@ public class AndroUtils {
          * @param key   - key for the value to be inserted or updated in shared Preference.
          * @param value - long value to be inserted or updated in shared Preference.
          */
-        public static void putLong(String key, Set<String> value) {
+        public static void putStringSet(String key, Set<String> value) {
             if (checkSharedPrefsInstance()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     editor.putStringSet(key, value);
@@ -216,7 +214,7 @@ public class AndroUtils {
          * @param key - key for the List to be retrieved from shared Preference.
          * @return - List of elements or null.
          */
-        public static List getList(String key) {
+        public static List<?> getList(String key) {
             List<?> list = null;
             if (checkSharedPrefsInstance()) {
                 String lstString = sharedPreferences.getString(key, null);
@@ -246,8 +244,8 @@ public class AndroUtils {
         /**
          * Retrieve the int from SharedPreferences mapped with the key.
          *
-         * @param key - key for the String to be retrieved from shared Preference.
-         * @return - Int or 0.
+         * @param key - key for the int to be retrieved from shared Preference.
+         * @return - int value or 0.
          */
         public static int getInt(String key) {
             int value = 0;
@@ -257,8 +255,71 @@ public class AndroUtils {
             return value;
         }
 
+        /**
+         * Retrieve the float from SharedPreferences mapped with the key.
+         *
+         * @param key - key for the float to be retrieved from shared Preference.
+         * @return - float value or 0.
+         */
+        public static float getFloat(String key) {
+            float value = 0;
+            if (checkSharedPrefsInstance()) {
+                value = sharedPreferences.getFloat(key, 0);
+            }
+            return value;
+        }
+
+        /**
+         * Retrieve the long from SharedPreferences mapped with the key.
+         *
+         * @param key - key for the long to be retrieved from shared Preference.
+         * @return - long value or 0.
+         */
+        public static long getLong(String key) {
+            long value = 0;
+            if (checkSharedPrefsInstance()) {
+                value = sharedPreferences.getLong(key, 0);
+            }
+            return value;
+        }
+
+        /**
+         * Retrieve the boolean from SharedPreferences mapped with the key.
+         *
+         * @param key - key for the boolean to be retrieved from shared Preference.
+         * @return - boolean value.
+         */
+        public static boolean getBoolean(String key) {
+            boolean value = false;
+            if (checkSharedPrefsInstance()) {
+                value = sharedPreferences.getBoolean(key, false);
+            }
+            return value;
+        }
+
+        /**
+         * Retrieve the Set<String> from SharedPreferences mapped with the key.
+         * (Available in SDK version higher than HONEYCOMB).
+         *
+         * @param key - key for the Set<String> to be retrieved from shared Preference.
+         * @return - Set<String> or null.
+         */
+        public static Set<String> getStringSet(String key) {
+            Set<String> value = null;
+            if (checkSharedPrefsInstance()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    value = sharedPreferences.getStringSet(key, null);
+                } else {
+                    Log.e(TAG, "Getting  Set<String> from SharedPreferences is available " +
+                            "in SDK version higher than HONEYCOMB");
+                }
+            }
+            return value;
+        }
+
 
     }
 
 
 }
+
