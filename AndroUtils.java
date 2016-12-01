@@ -1,6 +1,9 @@
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -316,6 +319,66 @@ public class AndroUtils {
             return value;
         }
 
+
+    }
+
+
+    public static class Activity {
+
+        /**
+         * Check whether the context is null or not
+         *
+         * @return -boolean
+         */
+        private static boolean checkContextInstance() {
+            boolean isContext = true;
+            if (!isNull(context)) {
+                isContext = true;
+            } else {
+                isContext = false;
+                Log.e(TAG, "Context not found. Check whether you have initialized the instance in your" +
+                        " Application class.\n If not then use " +
+                        "AndroUtils.init(getApplicationContext()) in your Application class.");
+            }
+            return isContext;
+        }
+
+        /**
+         * Method to Start any activity.
+         *
+         * @param activity - Activity to start
+         */
+        public static void startActivity(android.app.Activity activity) {
+            context.startActivity(new Intent(context, activity.getClass()));
+        }
+
+
+        /**
+         * Method to Start any activity with bundle data.
+         *
+         * @param activity - Activity to start
+         * @param bundle   - Bundle object with data to send
+         * @param key      - key for Bundle object
+         */
+        public static void startActivityWithData(android.app.Activity activity, Bundle bundle, String key) {
+            Intent intent = new Intent(context, activity.getClass());
+            intent.putExtra(key, bundle);
+            context.startActivity(new Intent(context, activity.getClass()));
+        }
+
+
+        /**
+         * Method to Start any activity for result.
+         *
+         * @param firstActivity  - The calling Activity
+         * @param secondActivity - The activity to be started
+         * @param requestCode    - request code
+         */
+        public static void startActivityForResult(android.app.Activity firstActivity,
+                                                  android.app.Activity secondActivity, int requestCode) {
+            firstActivity.startActivityForResult(new Intent(context, secondActivity.getClass()), requestCode);
+
+        }
 
     }
 
