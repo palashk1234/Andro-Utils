@@ -1,10 +1,14 @@
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -24,15 +28,39 @@ public class AndroUtils {
         this.context = context;
     }
 
+    /**
+     * Initialize the instance of AndroUtils.
+     *
+     * @param context
+     */
     public static void init(Context context) {
         new AndroUtils(context);
     }
 
     /**
+     * Check whether the context is null or not
+     *
+     * @return boolean
+     */
+    private static boolean checkContextInstance() {
+        boolean isContext = true;
+        if (!isNull(context)) {
+            isContext = true;
+        } else {
+            isContext = false;
+            Log.e(TAG, "Context not found. Check whether you have initialized the instance in your" +
+                    " Application class.\n If not then use " +
+                    "AndroUtils.init(getApplicationContext()) in your Application class.");
+        }
+        return isContext;
+    }
+
+
+    /**
      * Checks whether the object is null or not.
      *
-     * @param object - object to be verified.
-     * @return - boolean
+     * @param object object to be verified.
+     * @return boolean
      */
     public static boolean isNull(Object object) {
         boolean isValid = false;
@@ -54,8 +82,8 @@ public class AndroUtils {
     /**
      * Checks whether the String is null or not.
      *
-     * @param object - String to be verified.
-     * @return - boolean
+     * @param object String to be verified.
+     * @return boolean
      */
     public static boolean isNullString(String object) {
         boolean isValid = false;
@@ -79,6 +107,50 @@ public class AndroUtils {
     }
 
     /**
+     * Checks whether the string is valid mobile no or not
+     *
+     * @param mobileNo Mobile no string to be verified.
+     * @return boolean
+     */
+    public static boolean isValidMobile(String mobileNo) {
+        boolean isvalid = false;
+        if (!isNullString(mobileNo)) {
+            if (mobileNo.length() != 10 || mobileNo.length() > 14) {
+                isvalid = false;
+                // error message
+            } else {
+                isvalid = true;
+            }
+        } else {
+            Log.e(TAG, "Entered mobile no is null.");
+        }
+        return isvalid;
+
+    }
+
+    /**
+     * Checks whether the string is valid email or not.
+     *
+     * @param email Mobile no string to be verified.
+     * @return boolean.
+     */
+    public static boolean isValidMail(String email) {
+        boolean isvalid = false;
+        if (isNullString(email)) {
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+
+                isvalid = true;
+            } else {
+                isvalid = false;
+            }
+        } else {
+            Log.e(TAG, "Entered email is null.");
+        }
+        return isvalid;
+    }
+
+
+    /**
      * Utilities For Shared Preferences
      */
     public static class Prefs {
@@ -93,7 +165,7 @@ public class AndroUtils {
          */
         private static boolean checkSharedPrefsInstance() {
             boolean isContext = true;
-            if (!isNull(context)) {
+            if (checkContextInstance()) {
                 if (isNull(sharedPreferences)) {
                     sharedPreferences = context.getSharedPreferences("", 1);
                     editor = sharedPreferences.edit();
@@ -101,9 +173,6 @@ public class AndroUtils {
                 isContext = true;
             } else {
                 isContext = false;
-                Log.e(TAG, "Context not found. Check whether you have initialized the instance in your" +
-                        " Application class.\n If not then use " +
-                        "AndroUtils.init(getApplicationContext()) in your Application class.");
             }
             return isContext;
         }
@@ -111,8 +180,8 @@ public class AndroUtils {
         /**
          * Insert or Update a String value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - String value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value String value to be inserted or updated in shared Preference.
          */
         public static void putString(String key, String value) {
             if (checkSharedPrefsInstance()) {
@@ -125,8 +194,8 @@ public class AndroUtils {
         /**
          * Insert or Update a int value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - int value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value int value to be inserted or updated in shared Preference.
          */
         public static void putInt(String key, int value) {
             if (checkSharedPrefsInstance()) {
@@ -138,8 +207,8 @@ public class AndroUtils {
         /**
          * Insert or Update a boolean value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - boolean value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value boolean value to be inserted or updated in shared Preference.
          */
         public static void putBoolean(String key, boolean value) {
             if (checkSharedPrefsInstance()) {
@@ -151,8 +220,8 @@ public class AndroUtils {
         /**
          * Insert or Update a float value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - float value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value float value to be inserted or updated in shared Preference.
          */
         public static void putFloat(String key, float value) {
             if (checkSharedPrefsInstance()) {
@@ -164,8 +233,8 @@ public class AndroUtils {
         /**
          * Insert or Update a long value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - long value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value long value to be inserted or updated in shared Preference.
          */
         public static void putLong(String key, long value) {
             if (checkSharedPrefsInstance()) {
@@ -175,11 +244,11 @@ public class AndroUtils {
         }
 
         /**
-         * Insert or Update a Set of Strings  in shared Preference
+         * Insert or Update a Set&lt;Strings&gt;  in shared Preference.<br>
          * (Available in SDK version higher than HONEYCOMB).
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - long value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value long value to be inserted or updated in shared Preference.
          */
         public static void putStringSet(String key, Set<String> value) {
             if (checkSharedPrefsInstance()) {
@@ -197,8 +266,8 @@ public class AndroUtils {
         /**
          * Insert or Update a List in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - List<E> to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value List<E> to be inserted or updated in shared Preference.
          */
         public static void putList(String key, List<?> value) {
             if (checkSharedPrefsInstance()) {
@@ -213,8 +282,8 @@ public class AndroUtils {
         /**
          * Retrieve the List from SharedPreferences mapped with the key.
          *
-         * @param key - key for the List to be retrieved from shared Preference.
-         * @return - List of elements or null.
+         * @param key key for the List to be retrieved from shared Preference.
+         * @return List of elements or null.
          */
         public static List<?> getList(String key) {
             List<?> list = null;
@@ -232,8 +301,8 @@ public class AndroUtils {
         /**
          * Retrieve the String from SharedPreferences mapped with the key.
          *
-         * @param key - key for the String to be retrieved from shared Preference.
-         * @return - String or null.
+         * @param key key for the String to be retrieved from shared Preference.
+         * @return String or null.
          */
         public static String getString(String key) {
             String value = null;
@@ -246,8 +315,8 @@ public class AndroUtils {
         /**
          * Retrieve the int from SharedPreferences mapped with the key.
          *
-         * @param key - key for the int to be retrieved from shared Preference.
-         * @return - int value or 0.
+         * @param key key for the int to be retrieved from shared Preference.
+         * @return int value or 0.
          */
         public static int getInt(String key) {
             int value = 0;
@@ -260,8 +329,8 @@ public class AndroUtils {
         /**
          * Retrieve the float from SharedPreferences mapped with the key.
          *
-         * @param key - key for the float to be retrieved from shared Preference.
-         * @return - float value or 0.
+         * @param key key for the float to be retrieved from shared Preference.
+         * @return float value or 0.
          */
         public static float getFloat(String key) {
             float value = 0;
@@ -274,8 +343,8 @@ public class AndroUtils {
         /**
          * Retrieve the long from SharedPreferences mapped with the key.
          *
-         * @param key - key for the long to be retrieved from shared Preference.
-         * @return - long value or 0.
+         * @param key key for the long to be retrieved from shared Preference.
+         * @return long value or 0.
          */
         public static long getLong(String key) {
             long value = 0;
@@ -288,8 +357,8 @@ public class AndroUtils {
         /**
          * Retrieve the boolean from SharedPreferences mapped with the key.
          *
-         * @param key - key for the boolean to be retrieved from shared Preference.
-         * @return - boolean value.
+         * @param key key for the boolean to be retrieved from shared Preference.
+         * @return boolean value.
          */
         public static boolean getBoolean(String key) {
             boolean value = false;
@@ -300,11 +369,11 @@ public class AndroUtils {
         }
 
         /**
-         * Retrieve the Set<String> from SharedPreferences mapped with the key.
+         * Retrieve the Set&lt;String&gt; from SharedPreferences mapped with the key.<br>
          * (Available in SDK version higher than HONEYCOMB).
          *
-         * @param key - key for the Set<String> to be retrieved from shared Preference.
-         * @return - Set<String> or null.
+         * @param key key for the Set<String> to be retrieved from shared Preference.
+         * @return Set<String> or null.
          */
         public static Set<String> getStringSet(String key) {
             Set<String> value = null;
@@ -318,70 +387,246 @@ public class AndroUtils {
             }
             return value;
         }
-
-
     }
 
-
+    /**
+     * Utilities for Activity
+     */
     public static class Activity {
-
-        /**
-         * Check whether the context is null or not
-         *
-         * @return -boolean
-         */
-        private static boolean checkContextInstance() {
-            boolean isContext = true;
-            if (!isNull(context)) {
-                isContext = true;
-            } else {
-                isContext = false;
-                Log.e(TAG, "Context not found. Check whether you have initialized the instance in your" +
-                        " Application class.\n If not then use " +
-                        "AndroUtils.init(getApplicationContext()) in your Application class.");
-            }
-            return isContext;
-        }
 
         /**
          * Method to Start any activity.
          *
-         * @param activity - Activity to start
+         * @param activity Activity to start
          */
         public static void startActivity(android.app.Activity activity) {
-            context.startActivity(new Intent(context, activity.getClass()));
-        }
+            if (checkContextInstance()) {
+                if (!isNull(activity)) {
+                    context.startActivity(new Intent(context, activity.getClass()));
+                } else {
+                    Log.e(TAG, "Activity should not be null");
+                }
+            }
 
+        }
 
         /**
          * Method to Start any activity with bundle data.
          *
-         * @param activity - Activity to start
-         * @param bundle   - Bundle object with data to send
-         * @param key      - key for Bundle object
+         * @param activity Activity to start
+         * @param bundle   Bundle object with data to send
+         * @param key      key for Bundle object
          */
         public static void startActivityWithData(android.app.Activity activity, Bundle bundle, String key) {
-            Intent intent = new Intent(context, activity.getClass());
-            intent.putExtra(key, bundle);
-            context.startActivity(new Intent(context, activity.getClass()));
+            if (checkContextInstance()) {
+                if (!isNull(activity)) {
+                    Intent intent = new Intent(context, activity.getClass());
+                    intent.putExtra(key, bundle);
+                    context.startActivity(new Intent(context, activity.getClass()));
+                } else {
+                    Log.e(TAG, "Activity should not be null");
+                }
+            }
+
         }
 
+        /**
+         * Method to Start any activity with List.
+         *
+         * @param activity Activity to start
+         * @param list     List to send to activity
+         * @param key      key for setting List object in the intent.
+         */
+        public static void startActivityWithList(android.app.Activity activity, List<?> list, String key) {
+            if (checkContextInstance()) {
+                if (!isNull(activity)) {
+                    Intent intent = new Intent(context, activity.getClass());
+                    if (!isNull(list)) {
+                        Type type = new TypeToken<List<?>>() {
+                        }.getType();
+                        String lstString = new Gson().toJson(list, type);
+                        intent.putExtra(key, lstString);
+                    }
+                    context.startActivity(new Intent(context, activity.getClass()));
+                } else {
+                    Log.e(TAG, "Activity should not be null");
+                }
+            }
+
+        }
 
         /**
          * Method to Start any activity for result.
          *
-         * @param firstActivity  - The calling Activity
-         * @param secondActivity - The activity to be started
-         * @param requestCode    - request code
+         * @param firstActivity  The calling Activity
+         * @param secondActivity The activity to be started
+         * @param requestCode    request code
          */
         public static void startActivityForResult(android.app.Activity firstActivity,
                                                   android.app.Activity secondActivity, int requestCode) {
-            firstActivity.startActivityForResult(new Intent(context, secondActivity.getClass()), requestCode);
+            if (checkContextInstance()) {
+                if (!isNull(firstActivity)) {
+                    if (!isNull(secondActivity)) {
+                        firstActivity.startActivityForResult(new Intent(context, secondActivity.getClass()),
+                                requestCode);
+                    } else {
+                        Log.e(TAG, "Second Activity should not be null.");
+                    }
 
+                } else {
+                    Log.e(TAG, "First Activity should not be null.");
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Utilities for Dialogs
+     */
+    public static class DialogUtils {
+
+        /**
+         * Method to show an Alert dialog on screen.
+         *
+         * @param context               Context of currently running activity in foreground
+         * @param title                 Title string of the dialog.
+         * @param message               Message to be shown in dialog.
+         * @param positiveText          Text to shown on positive button
+         * @param negativeText          Text to shown on negative button
+         * @param positiveClickListener Operation to be performed on click of positive button
+         * @param negativeClickListener Operation to be performed on click of negative button
+         */
+        public static void showAlertDialog(Context context, String title, String message, String positiveText, String negativeText,
+                                           DialogInterface.OnClickListener positiveClickListener,
+                                           DialogInterface.OnClickListener negativeClickListener) throws Exception {
+            if (!isNull(context)) {
+                new AlertDialog.Builder(context)
+                        .setTitle("" + title)
+                        .setMessage("" + message)
+                        .setPositiveButton("" + positiveText, positiveClickListener)
+                        .setNegativeButton("" + negativeText, negativeClickListener)
+                        .show();
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
+            }
+        }
+
+
+        /**
+         * Method to show a support V7 (Material theme) Alert dialog on screen.
+         *
+         * @param context               Context of currently running activity in foreground
+         * @param title                 Title string of the dialog.
+         * @param message               Message to be shown in dialog.
+         * @param positiveText          Text to shown on positive button
+         * @param negativeText          Text to shown on negative button
+         * @param positiveClickListener Operation to be performed on click of positive button
+         * @param negativeClickListener Operation to be performed on click of negative button
+         */
+        public static void showAlertDialogV7(Context context, String title, String message, String positiveText, String negativeText,
+                                             DialogInterface.OnClickListener positiveClickListener,
+                                             DialogInterface.OnClickListener negativeClickListener) throws Exception {
+            if (!isNull(context)) {
+                new android.support.v7.app.AlertDialog.Builder(context)
+                        .setTitle("" + title)
+                        .setMessage("" + message)
+                        .setPositiveButton("" + positiveText, positiveClickListener)
+                        .setNegativeButton("" + negativeText, negativeClickListener)
+                        .show();
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
+            }
+        }
+
+        /**
+         * Method to show a custom dialog on screen(Without title).
+         *
+         * @param context    Context of currently running activity in foreground.
+         * @param resourceId int resource id of the xml layout to be shown in dialog.
+         * @return instance of dialog after showing.
+         */
+        public static Dialog showDialog(Context context, int resourceId) {
+            Dialog dialog = null;
+            if (!isNull(context)) {
+                dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(resourceId);
+                dialog.show();
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
+            }
+            return dialog;
+        }
+
+        /**
+         * Method to show a custom dialog on screen(With title).
+         *
+         * @param context    Context of currently running activity in foreground.
+         * @param title      title string to be shown as title of the dialog.
+         * @param resourceId int resource id of the xml layout to be shown in dialog.
+         * @return instance of dialog after showing.
+         */
+        public static Dialog showDialogWithTitle(Context context, String title, int resourceId) {
+            Dialog dialog = null;
+            if (!isNull(context)) {
+                dialog = new Dialog(context);
+                dialog.setTitle(title);
+                dialog.setContentView(resourceId);
+                dialog.show();
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
+            }
+            return dialog;
+        }
+
+
+        /**
+         * Method to display a progress dialog on the screen
+         *
+         * @param context    Context of currently running activity in foreground.
+         * @param message    Message to be shown in dialog.
+         * @param cancelable boolean to set dialog cancelable.
+         * @return instance of progress dialog
+         */
+        public static ProgressDialog showProgressDialog(Context context, String message, boolean cancelable) {
+            ProgressDialog progressDialog = null;
+            if (!isNull(context)) {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage(message);
+                progressDialog.setCancelable(true);
+                try {
+                    if (!progressDialog.isShowing())
+                        progressDialog.show();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
+            }
+            return progressDialog;
+        }
+
+        /**
+         * Hide the progress dialog showing on the screen.
+         *
+         * @param progressDialog instance of progress dialog to hide from screen.
+         */
+        public static void hideProgressdialog(ProgressDialog progressDialog) {
+            try {
+                if (!isNull(progressDialog)) {
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                } else {
+                    Log.e(TAG, "Progress dialog instance is null.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
-
 
 }
 
