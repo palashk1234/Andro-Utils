@@ -1,5 +1,7 @@
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -27,6 +29,25 @@ public class AndroUtils {
     public static void init(Context context) {
         new AndroUtils(context);
     }
+
+    /**
+     * Check whether the context is null or not
+     *
+     * @return -boolean
+     */
+    private static boolean checkContextInstance() {
+        boolean isContext = true;
+        if (!isNull(context)) {
+            isContext = true;
+        } else {
+            isContext = false;
+            Log.e(TAG, "Context not found. Check whether you have initialized the instance in your" +
+                    " Application class.\n If not then use " +
+                    "AndroUtils.init(getApplicationContext()) in your Application class.");
+        }
+        return isContext;
+    }
+
 
     /**
      * Checks whether the object is null or not.
@@ -93,7 +114,7 @@ public class AndroUtils {
          */
         private static boolean checkSharedPrefsInstance() {
             boolean isContext = true;
-            if (!isNull(context)) {
+            if (checkContextInstance()) {
                 if (isNull(sharedPreferences)) {
                     sharedPreferences = context.getSharedPreferences("", 1);
                     editor = sharedPreferences.edit();
@@ -101,9 +122,6 @@ public class AndroUtils {
                 isContext = true;
             } else {
                 isContext = false;
-                Log.e(TAG, "Context not found. Check whether you have initialized the instance in your" +
-                        " Application class.\n If not then use " +
-                        "AndroUtils.init(getApplicationContext()) in your Application class.");
             }
             return isContext;
         }
@@ -318,30 +336,12 @@ public class AndroUtils {
             }
             return value;
         }
-
-
     }
 
-
+    /**
+     * Utilities for Activity
+     */
     public static class Activity {
-
-        /**
-         * Check whether the context is null or not
-         *
-         * @return -boolean
-         */
-        private static boolean checkContextInstance() {
-            boolean isContext = true;
-            if (!isNull(context)) {
-                isContext = true;
-            } else {
-                isContext = false;
-                Log.e(TAG, "Context not found. Check whether you have initialized the instance in your" +
-                        " Application class.\n If not then use " +
-                        "AndroUtils.init(getApplicationContext()) in your Application class.");
-            }
-            return isContext;
-        }
 
         /**
          * Method to Start any activity.
@@ -349,9 +349,15 @@ public class AndroUtils {
          * @param activity - Activity to start
          */
         public static void startActivity(android.app.Activity activity) {
-            context.startActivity(new Intent(context, activity.getClass()));
-        }
+            if (checkContextInstance()) {
+                if (!isNull(activity)) {
+                    context.startActivity(new Intent(context, activity.getClass()));
+                } else {
+                    Log.e(TAG, "Activity should not be null");
+                }
+            }
 
+        }
 
         /**
          * Method to Start any activity with bundle data.
@@ -361,11 +367,42 @@ public class AndroUtils {
          * @param key      - key for Bundle object
          */
         public static void startActivityWithData(android.app.Activity activity, Bundle bundle, String key) {
-            Intent intent = new Intent(context, activity.getClass());
-            intent.putExtra(key, bundle);
-            context.startActivity(new Intent(context, activity.getClass()));
+            if (checkContextInstance()) {
+                if (!isNull(activity)) {
+                    Intent intent = new Intent(context, activity.getClass());
+                    intent.putExtra(key, bundle);
+                    context.startActivity(new Intent(context, activity.getClass()));
+                } else {
+                    Log.e(TAG, "Activity should not be null");
+                }
+            }
+
         }
 
+        /**
+         * Method to Start any activity with List.
+         *
+         * @param activity - Activity to start
+         * @param list     - List to send to activity
+         * @param key      - key for setting List object in the intent.
+         */
+        public static void startActivityWithList(android.app.Activity activity, List<?> list, String key) {
+            if (checkContextInstance()) {
+                if (!isNull(activity)) {
+                    Intent intent = new Intent(context, activity.getClass());
+                    if (!isNull(list)) {
+                        Type type = new TypeToken<List<?>>() {
+                        }.getType();
+                        String lstString = new Gson().toJson(list, type);
+                        intent.putExtra(key, lstString);
+                    }
+                    context.startActivity(new Intent(context, activity.getClass()));
+                } else {
+                    Log.e(TAG, "Activity should not be null");
+                }
+            }
+
+        }
 
         /**
          * Method to Start any activity for result.
@@ -376,12 +413,84 @@ public class AndroUtils {
          */
         public static void startActivityForResult(android.app.Activity firstActivity,
                                                   android.app.Activity secondActivity, int requestCode) {
-            firstActivity.startActivityForResult(new Intent(context, secondActivity.getClass()), requestCode);
+            if (checkContextInstance()) {
+                if (!isNull(firstActivity)) {
+                    if (!isNull(secondActivity)) {
+                        firstActivity.startActivityForResult(new Intent(context, secondActivity.getClass()),
+                                requestCode);
+                    } else {
+                        Log.e(TAG, "Second Activity should not be null.");
+                    }
 
+                } else {
+                    Log.e(TAG, "First Activity should not be null.");
+                }
+            }
         }
-
     }
 
+
+    /**
+     * Utilities for Dialog
+     */
+
+    public static class Dialog {
+
+        /**
+         * Method to show an Alert Dialog on screen.
+         *
+         * @param context               - Context of currently running activity in foreground
+         * @param title                 - Title string of the dialog.
+         * @param message               - Message to be shown in dialog.
+         * @param positiveText          - Text to shown on positive button
+         * @param negativeText          - Text to shown on positive button
+         * @param positiveClickListener - Operation to be performed on click of positive button
+         * @param negativeClickListener - Operation to be performed on click of negative button
+         */
+        public static void showAlertDialog(Context context, String title, String message, String positiveText, String negativeText,
+                                           DialogInterface.OnClickListener positiveClickListener,
+                                           DialogInterface.OnClickListener negativeClickListener) throws Exception {
+            if (!isNull(context)) {
+                new AlertDialog.Builder(context)
+                        .setTitle("" + title)
+                        .setMessage("" + message)
+                        .setPositiveButton("" + positiveText, positiveClickListener)
+                        .setNegativeButton("" + negativeText, negativeClickListener)
+                        .show();
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
+            }
+        }
+
+
+        /**
+         * Method to show a support V7 (Material theme) Alert Dialog on screen.
+         *
+         * @param context               - Context of currently running activity in foreground
+         * @param title                 - Title string of the dialog.
+         * @param message               - Message to be shown in dialog.
+         * @param positiveText          - Text to shown on positive button
+         * @param negativeText          - Text to shown on positive button
+         * @param positiveClickListener - Operation to be performed on click of positive button
+         * @param negativeClickListener - Operation to be performed on click of negative button
+         */
+        public static void showAlertDialogV7(Context context, String title, String message, String positiveText, String negativeText,
+                                             DialogInterface.OnClickListener positiveClickListener,
+                                             DialogInterface.OnClickListener negativeClickListener) throws Exception {
+            if (!isNull(context)) {
+                new android.support.v7.app.AlertDialog.Builder(context)
+                        .setTitle("" + title)
+                        .setMessage("" + message)
+                        .setPositiveButton("" + positiveText, positiveClickListener)
+                        .setNegativeButton("" + negativeText, negativeClickListener)
+                        .show();
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
+            }
+        }
+
+
+    }
 
 }
 
