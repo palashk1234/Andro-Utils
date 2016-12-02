@@ -1,5 +1,6 @@
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -104,6 +105,50 @@ public class AndroUtils {
         }
         return isValid;
     }
+
+    /**
+     * Checks whether the string is valid mobile no or not
+     *
+     * @param mobileNo Mobile no string to be verified.
+     * @return boolean
+     */
+    public static boolean isValidMobile(String mobileNo) {
+        boolean isvalid = false;
+        if (!isNullString(mobileNo)) {
+            if (mobileNo.length() != 10 || mobileNo.length() > 14) {
+                isvalid = false;
+                // error message
+            } else {
+                isvalid = true;
+            }
+        } else {
+            Log.e(TAG, "Entered mobile no is null.");
+        }
+        return isvalid;
+
+    }
+
+    /**
+     * Checks whether the string is valid email or not.
+     *
+     * @param email Mobile no string to be verified.
+     * @return boolean.
+     */
+    public static boolean isValidMail(String email) {
+        boolean isvalid = false;
+        if (isNullString(email)) {
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+
+                isvalid = true;
+            } else {
+                isvalid = false;
+            }
+        } else {
+            Log.e(TAG, "Entered email is null.");
+        }
+        return isvalid;
+    }
+
 
     /**
      * Utilities For Shared Preferences
@@ -508,6 +553,8 @@ public class AndroUtils {
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(resourceId);
                 dialog.show();
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
             }
             return dialog;
         }
@@ -527,10 +574,57 @@ public class AndroUtils {
                 dialog.setTitle(title);
                 dialog.setContentView(resourceId);
                 dialog.show();
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
             }
             return dialog;
         }
 
+
+        /**
+         * Method to display a progress dialog on the screen
+         *
+         * @param context    Context of currently running activity in foreground.
+         * @param message    Message to be shown in dialog.
+         * @param cancelable boolean to set dialog cancelable.
+         * @return instance of progress dialog
+         */
+        public static ProgressDialog showProgressDialog(Context context, String message, boolean cancelable) {
+            ProgressDialog progressDialog = null;
+            if (!isNull(context)) {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage(message);
+                progressDialog.setCancelable(true);
+                try {
+                    if (!progressDialog.isShowing())
+                        progressDialog.show();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
+            }
+            return progressDialog;
+        }
+
+        /**
+         * Hide the progress dialog showing on the screen.
+         *
+         * @param progressDialog instance of progress dialog to hide from screen.
+         */
+        public static void hideProgressdialog(ProgressDialog progressDialog) {
+            try {
+                if (!isNull(progressDialog)) {
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                } else {
+                    Log.e(TAG, "Progress dialog instance is null.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
