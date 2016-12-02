@@ -1,5 +1,5 @@
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -26,6 +27,11 @@ public class AndroUtils {
         this.context = context;
     }
 
+    /**
+     * Initialize the instance of AndroUtils.
+     *
+     * @param context
+     */
     public static void init(Context context) {
         new AndroUtils(context);
     }
@@ -33,7 +39,7 @@ public class AndroUtils {
     /**
      * Check whether the context is null or not
      *
-     * @return -boolean
+     * @return boolean
      */
     private static boolean checkContextInstance() {
         boolean isContext = true;
@@ -52,8 +58,8 @@ public class AndroUtils {
     /**
      * Checks whether the object is null or not.
      *
-     * @param object - object to be verified.
-     * @return - boolean
+     * @param object object to be verified.
+     * @return boolean
      */
     public static boolean isNull(Object object) {
         boolean isValid = false;
@@ -75,8 +81,8 @@ public class AndroUtils {
     /**
      * Checks whether the String is null or not.
      *
-     * @param object - String to be verified.
-     * @return - boolean
+     * @param object String to be verified.
+     * @return boolean
      */
     public static boolean isNullString(String object) {
         boolean isValid = false;
@@ -129,8 +135,8 @@ public class AndroUtils {
         /**
          * Insert or Update a String value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - String value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value String value to be inserted or updated in shared Preference.
          */
         public static void putString(String key, String value) {
             if (checkSharedPrefsInstance()) {
@@ -143,8 +149,8 @@ public class AndroUtils {
         /**
          * Insert or Update a int value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - int value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value int value to be inserted or updated in shared Preference.
          */
         public static void putInt(String key, int value) {
             if (checkSharedPrefsInstance()) {
@@ -156,8 +162,8 @@ public class AndroUtils {
         /**
          * Insert or Update a boolean value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - boolean value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value boolean value to be inserted or updated in shared Preference.
          */
         public static void putBoolean(String key, boolean value) {
             if (checkSharedPrefsInstance()) {
@@ -169,8 +175,8 @@ public class AndroUtils {
         /**
          * Insert or Update a float value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - float value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value float value to be inserted or updated in shared Preference.
          */
         public static void putFloat(String key, float value) {
             if (checkSharedPrefsInstance()) {
@@ -182,8 +188,8 @@ public class AndroUtils {
         /**
          * Insert or Update a long value in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - long value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value long value to be inserted or updated in shared Preference.
          */
         public static void putLong(String key, long value) {
             if (checkSharedPrefsInstance()) {
@@ -193,11 +199,11 @@ public class AndroUtils {
         }
 
         /**
-         * Insert or Update a Set of Strings  in shared Preference
+         * Insert or Update a Set&lt;Strings&gt;  in shared Preference.<br>
          * (Available in SDK version higher than HONEYCOMB).
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - long value to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value long value to be inserted or updated in shared Preference.
          */
         public static void putStringSet(String key, Set<String> value) {
             if (checkSharedPrefsInstance()) {
@@ -215,8 +221,8 @@ public class AndroUtils {
         /**
          * Insert or Update a List in shared Preference.
          *
-         * @param key   - key for the value to be inserted or updated in shared Preference.
-         * @param value - List<E> to be inserted or updated in shared Preference.
+         * @param key   key for the value to be inserted or updated in shared Preference.
+         * @param value List<E> to be inserted or updated in shared Preference.
          */
         public static void putList(String key, List<?> value) {
             if (checkSharedPrefsInstance()) {
@@ -231,8 +237,8 @@ public class AndroUtils {
         /**
          * Retrieve the List from SharedPreferences mapped with the key.
          *
-         * @param key - key for the List to be retrieved from shared Preference.
-         * @return - List of elements or null.
+         * @param key key for the List to be retrieved from shared Preference.
+         * @return List of elements or null.
          */
         public static List<?> getList(String key) {
             List<?> list = null;
@@ -250,8 +256,8 @@ public class AndroUtils {
         /**
          * Retrieve the String from SharedPreferences mapped with the key.
          *
-         * @param key - key for the String to be retrieved from shared Preference.
-         * @return - String or null.
+         * @param key key for the String to be retrieved from shared Preference.
+         * @return String or null.
          */
         public static String getString(String key) {
             String value = null;
@@ -264,8 +270,8 @@ public class AndroUtils {
         /**
          * Retrieve the int from SharedPreferences mapped with the key.
          *
-         * @param key - key for the int to be retrieved from shared Preference.
-         * @return - int value or 0.
+         * @param key key for the int to be retrieved from shared Preference.
+         * @return int value or 0.
          */
         public static int getInt(String key) {
             int value = 0;
@@ -278,8 +284,8 @@ public class AndroUtils {
         /**
          * Retrieve the float from SharedPreferences mapped with the key.
          *
-         * @param key - key for the float to be retrieved from shared Preference.
-         * @return - float value or 0.
+         * @param key key for the float to be retrieved from shared Preference.
+         * @return float value or 0.
          */
         public static float getFloat(String key) {
             float value = 0;
@@ -292,8 +298,8 @@ public class AndroUtils {
         /**
          * Retrieve the long from SharedPreferences mapped with the key.
          *
-         * @param key - key for the long to be retrieved from shared Preference.
-         * @return - long value or 0.
+         * @param key key for the long to be retrieved from shared Preference.
+         * @return long value or 0.
          */
         public static long getLong(String key) {
             long value = 0;
@@ -306,8 +312,8 @@ public class AndroUtils {
         /**
          * Retrieve the boolean from SharedPreferences mapped with the key.
          *
-         * @param key - key for the boolean to be retrieved from shared Preference.
-         * @return - boolean value.
+         * @param key key for the boolean to be retrieved from shared Preference.
+         * @return boolean value.
          */
         public static boolean getBoolean(String key) {
             boolean value = false;
@@ -318,11 +324,11 @@ public class AndroUtils {
         }
 
         /**
-         * Retrieve the Set<String> from SharedPreferences mapped with the key.
+         * Retrieve the Set&lt;String&gt; from SharedPreferences mapped with the key.<br>
          * (Available in SDK version higher than HONEYCOMB).
          *
-         * @param key - key for the Set<String> to be retrieved from shared Preference.
-         * @return - Set<String> or null.
+         * @param key key for the Set<String> to be retrieved from shared Preference.
+         * @return Set<String> or null.
          */
         public static Set<String> getStringSet(String key) {
             Set<String> value = null;
@@ -346,7 +352,7 @@ public class AndroUtils {
         /**
          * Method to Start any activity.
          *
-         * @param activity - Activity to start
+         * @param activity Activity to start
          */
         public static void startActivity(android.app.Activity activity) {
             if (checkContextInstance()) {
@@ -362,9 +368,9 @@ public class AndroUtils {
         /**
          * Method to Start any activity with bundle data.
          *
-         * @param activity - Activity to start
-         * @param bundle   - Bundle object with data to send
-         * @param key      - key for Bundle object
+         * @param activity Activity to start
+         * @param bundle   Bundle object with data to send
+         * @param key      key for Bundle object
          */
         public static void startActivityWithData(android.app.Activity activity, Bundle bundle, String key) {
             if (checkContextInstance()) {
@@ -382,9 +388,9 @@ public class AndroUtils {
         /**
          * Method to Start any activity with List.
          *
-         * @param activity - Activity to start
-         * @param list     - List to send to activity
-         * @param key      - key for setting List object in the intent.
+         * @param activity Activity to start
+         * @param list     List to send to activity
+         * @param key      key for setting List object in the intent.
          */
         public static void startActivityWithList(android.app.Activity activity, List<?> list, String key) {
             if (checkContextInstance()) {
@@ -407,9 +413,9 @@ public class AndroUtils {
         /**
          * Method to Start any activity for result.
          *
-         * @param firstActivity  - The calling Activity
-         * @param secondActivity - The activity to be started
-         * @param requestCode    - request code
+         * @param firstActivity  The calling Activity
+         * @param secondActivity The activity to be started
+         * @param requestCode    request code
          */
         public static void startActivityForResult(android.app.Activity firstActivity,
                                                   android.app.Activity secondActivity, int requestCode) {
@@ -431,21 +437,20 @@ public class AndroUtils {
 
 
     /**
-     * Utilities for Dialog
+     * Utilities for Dialogs
      */
-
-    public static class Dialog {
+    public static class DialogUtils {
 
         /**
-         * Method to show an Alert Dialog on screen.
+         * Method to show an Alert dialog on screen.
          *
-         * @param context               - Context of currently running activity in foreground
-         * @param title                 - Title string of the dialog.
-         * @param message               - Message to be shown in dialog.
-         * @param positiveText          - Text to shown on positive button
-         * @param negativeText          - Text to shown on positive button
-         * @param positiveClickListener - Operation to be performed on click of positive button
-         * @param negativeClickListener - Operation to be performed on click of negative button
+         * @param context               Context of currently running activity in foreground
+         * @param title                 Title string of the dialog.
+         * @param message               Message to be shown in dialog.
+         * @param positiveText          Text to shown on positive button
+         * @param negativeText          Text to shown on negative button
+         * @param positiveClickListener Operation to be performed on click of positive button
+         * @param negativeClickListener Operation to be performed on click of negative button
          */
         public static void showAlertDialog(Context context, String title, String message, String positiveText, String negativeText,
                                            DialogInterface.OnClickListener positiveClickListener,
@@ -464,15 +469,15 @@ public class AndroUtils {
 
 
         /**
-         * Method to show a support V7 (Material theme) Alert Dialog on screen.
+         * Method to show a support V7 (Material theme) Alert dialog on screen.
          *
-         * @param context               - Context of currently running activity in foreground
-         * @param title                 - Title string of the dialog.
-         * @param message               - Message to be shown in dialog.
-         * @param positiveText          - Text to shown on positive button
-         * @param negativeText          - Text to shown on positive button
-         * @param positiveClickListener - Operation to be performed on click of positive button
-         * @param negativeClickListener - Operation to be performed on click of negative button
+         * @param context               Context of currently running activity in foreground
+         * @param title                 Title string of the dialog.
+         * @param message               Message to be shown in dialog.
+         * @param positiveText          Text to shown on positive button
+         * @param negativeText          Text to shown on negative button
+         * @param positiveClickListener Operation to be performed on click of positive button
+         * @param negativeClickListener Operation to be performed on click of negative button
          */
         public static void showAlertDialogV7(Context context, String title, String message, String positiveText, String negativeText,
                                              DialogInterface.OnClickListener positiveClickListener,
@@ -487,6 +492,43 @@ public class AndroUtils {
             } else {
                 Log.e(TAG, "Dialog requires context of activity in foreground, Context should not be null.");
             }
+        }
+
+        /**
+         * Method to show a custom dialog on screen(Without title).
+         *
+         * @param context    Context of currently running activity in foreground.
+         * @param resourceId int resource id of the xml layout to be shown in dialog.
+         * @return instance of dialog after showing.
+         */
+        public static Dialog showDialog(Context context, int resourceId) {
+            Dialog dialog = null;
+            if (!isNull(context)) {
+                dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(resourceId);
+                dialog.show();
+            }
+            return dialog;
+        }
+
+        /**
+         * Method to show a custom dialog on screen(With title).
+         *
+         * @param context    Context of currently running activity in foreground.
+         * @param title      title string to be shown as title of the dialog.
+         * @param resourceId int resource id of the xml layout to be shown in dialog.
+         * @return instance of dialog after showing.
+         */
+        public static Dialog showDialogWithTitle(Context context, String title, int resourceId) {
+            Dialog dialog = null;
+            if (!isNull(context)) {
+                dialog = new Dialog(context);
+                dialog.setTitle(title);
+                dialog.setContentView(resourceId);
+                dialog.show();
+            }
+            return dialog;
         }
 
 
